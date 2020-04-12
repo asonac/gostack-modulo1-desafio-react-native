@@ -25,19 +25,39 @@ export default function App() {
 
 
   async function handleLikeRepository(id) {
+ 
+    /**
+     * This was my way
+     */
 
-    await api.post(`/repositories/${id}/like`);
+    // await api.post(`/repositories/${id}/like`);
 
-    const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+    // const repositoryIndex = repositories.findIndex(repository => repository.id === id);
 
-    if (repositoryIndex < 0) {
-      return
-    }
+    // if (repositoryIndex < 0) {
+    //   return
+    // }
 
-    let newArr = [...repositories]; 
-    newArr[repositoryIndex].likes += 1; 
+    // let newArr = [...repositories]; 
+    // newArr[repositoryIndex].likes += 1; 
 
-    setRepositories(newArr); 
+    // setRepositories(newArr); 
+
+    /**
+     * Diego's way
+     */
+    const response = await api.post(`/repositories/${id}/like`);
+
+    const likedRepository = response.data;
+
+    const repositoriesUpdated = repositories.map(repository => {
+      if(repository.id === id)
+        return likedRepository;
+      else 
+        return repository;
+    })
+
+    setRepositories(repositoriesUpdated); 
   }
 
   return (
@@ -67,7 +87,7 @@ export default function App() {
                 // Remember to replace "1" below with repository ID: {`repository-likes-${repository.id}`}
                 testID={`repository-likes-${repository.id}`}
               >
-                {repository.likes} curtidas
+                {repository.likes} curtida{repository.likes > 1? 's':''}
               </Text>
             </View>
   
